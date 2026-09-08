@@ -1,12 +1,12 @@
 (() => {
   const BLINK_ON = Math.round(480 * 1.3);
   const BLINK_OFF = Math.round(480 * 1.3);
-  const BLINKS_BEFORE = 4;
-  const BLINKS_AFTER = 3;
+  const BLINKS_BEFORE = 3;
+  const BLINKS_AFTER = 2;
   const AFTER_QUESTION_MS = 2000;
   const AFTER_CLOUD_PAUSE = 1220;
   const CLOUD_MS = 2400;
-  const HOLD_AFTER_BANG = 3000;
+  const HOLD_AFTER_BANG = 1500;
   const HOME_DISSOLVE_MS = 2000;
 
   const root = document.documentElement;
@@ -92,10 +92,10 @@
 
     const { data } = octx.getImageData(0, 0, off.width, off.height);
     const points = [];
-    const step = 5;
+    const step = 1.75;
     for (let y = 0; y < off.height; y += step) {
       for (let x = 0; x < off.width; x += step) {
-        if (data[(y * off.width + x) * 4 + 3] > 70) {
+        if (data[(Math.round(y) * off.width + Math.round(x)) * 4 + 3] > 70) {
           points.push({
             x: x / scale - w / 2,
             y: y / scale - h / 2,
@@ -120,15 +120,18 @@
       const particles = samples.map((p, i) => {
         const angle = Math.random() * Math.PI * 2;
         const speed = 0.35 + Math.random() * 0.85;
+        const base = ((1.1 + Math.random() * 1.6) / 4) * 0.7;
         return {
           x: p.x + (Math.random() - 0.5) * 28,
           y: p.y + (Math.random() - 0.5) * 28,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - 0.12,
-          r: 1.1 + Math.random() * 1.6,
+          r: Math.random() < 0.22 ? base * 1.55 : base,
           a: 0.72 + Math.random() * 0.28,
           life: 0.15 + Math.random() * 0.55,
           seed: i * 1.7 + Math.random() * 6,
+          cx: (Math.random() - 0.5) * 20,
+          cy: (Math.random() - 0.5) * 18,
         };
       });
 
@@ -158,9 +161,9 @@
 
         for (const p of particles) {
           const local = Math.min(1, Math.max(0, (t - p.life * 0.15) / (1 - p.life * 0.15)));
-          const drift = Math.sin(p.seed + t * 3.4);
-          const x = ox + p.x + (p.vx * 110 + drift * 8) * ease;
-          const y = oy + p.y + (p.vy * 110 - t * 14) * ease;
+          const arc = Math.sin(Math.PI * t);
+          const x = ox + p.x + p.vx * 110 * ease + p.cx * arc;
+          const y = oy + p.y + (p.vy * 110 - t * 14) * ease + p.cy * arc;
           const a = p.a * (1 - local);
           if (a <= 0.02) continue;
           ctx.fillStyle = `rgba(0, 0, 0, ${a})`;
