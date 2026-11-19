@@ -8,7 +8,7 @@ const UNITS = {
       },
       {
         stem: "航空交通の短所は、〔〕が高いことである。",
-        blanks: [{ choices: ["費用", "速度"], correct: 0 }]
+        blanks: [{ choices: ["費用", "鮮度"], correct: 0 }]
       },
       {
         stem: "航空交通は、比較的軽くて単価の〔〕工業製品の輸送に適している。",
@@ -24,7 +24,7 @@ const UNITS = {
       },
       {
         stem: "海上交通の短所は、〔〕が遅いことである。",
-        blanks: [{ choices: ["速度", "費用"], correct: 0 }]
+        blanks: [{ choices: ["速度", "輸送"], correct: 0 }]
       },
       {
         stem: "海上交通は、一般的な商品のほか、〔〕などの液体の輸送に適している。",
@@ -170,7 +170,7 @@ const UNITS = {
       },
       {
         stem: "先カンブリア時代には、酸素濃度の上昇などによって〔〕床が形成された。",
-        blanks: [{ choices: ["鉄鉱", "石炭"], correct: 0 }]
+        blanks: [{ choices: ["鉄鉱", "金鉱"], correct: 0 }]
       },
       {
         stem: "古生代には陸上動植物が出現し、〔〕層が形成された。",
