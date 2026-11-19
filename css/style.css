@@ -682,3 +682,18 @@ html.is-delay .shell {
     clip-path: inset(0);
   }
 }
+
+/* 横長画面（PCなど）では枠を正方形にして画面中央に置く。縦長画面は従来どおり */
+@media (orientation: landscape) and (min-height: 500px) {
+  .shell {
+    inset: auto;
+    top: var(--frame-inset);
+    left: calc((100vw - 100vh) / 2 + var(--frame-inset));
+    width: calc(100vh - var(--frame-inset) * 2);
+    aspect-ratio: 1 / 1;
+  }
+
+  .home {
+    left: calc((100vw - 100vh) / 2 + var(--frame-inset) + var(--frame-line) + var(--home-inset));
+  }
+}
