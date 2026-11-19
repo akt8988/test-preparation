@@ -8,25 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/intro.css">
-  <script>
-    try {
-      if (!sessionStorage.getItem("ethics-intro-seen")) {
-        sessionStorage.setItem("ethics-intro-seen", "1");
-        document.documentElement.classList.add("is-intro");
-      }
-    } catch (e) {}
-  </script>
 </head>
 <body>
-  <div class="intro" id="intro">
-    <button type="button" class="intro-skip" id="intro-skip">skip</button>
-    <canvas class="intro-clouds" id="intro-clouds" aria-hidden="true"></canvas>
-    <div class="intro-line" aria-hidden="true">
-      <span class="intro-glyph" id="intro-glyph"></span>
-      <span class="intro-caret" id="intro-caret"></span>
-    </div>
-  </div>
   <div class="shell">
     <div class="bar">
       <a class="home g-logo-reveal" href="./" aria-label="最初の画面へ" data-page-transition="off">
@@ -71,6 +54,5 @@
   </div>
 
   <script src="js/page-transition.js"></script>
-  <script src="js/intro.js"></script>
 </body>
 </html>
