@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地理総合　考査対策</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="bar">
+      <a class="home g-logo-reveal" href="../../index.html" aria-label="最初の画面へ" data-page-transition="off">
+        <img src="../../img/home.png" alt="" width="30" height="30">
+      </a>
+    </div>
+
+    <main class="page">
+      <header class="hero inner">
+        <a class="back g-clip-reveal" href="index.html" data-page-transition-mode="standard">↩︎単元一覧</a>
+        <h1 id="unit-title" class="g-clip-reveal">地理総合　考査対策</h1>
+      </header>
+
+      <div class="controls" id="controls" hidden>
+        <div class="controls-inner inner">
+          <button type="button" class="btn" id="show-all">解答を表示</button>
+          <button type="button" class="btn" id="hide-all">解答を非表示</button>
+        </div>
+      </div>
+      <div id="quiz"></div>
+    </main>
+
+    <aside id="js-next-navigation" class="next-nav">
+      <div class="next-nav__wrap">
+        <div class="next-nav__text-wrap">
+          <span id="js-next-navigation__text" class="next-nav__text">Next</span>
+          <span id="js-next-navigation__name" class="next-nav__name">単元一覧</span>
+        </div>
+        <div class="next-nav__icon-wrap g-logo-reveal">
+          <a
+            id="js-next-navigation__link"
+            class="next-nav__link"
+            href="index.html"
+            data-page-transition-mode="delayed"
+            data-page-transition-before-exit="550"
+            data-page-transition-after-exit="550"
+          >
+            <img class="next-nav__icon" src="../../img/next.svg" alt="" width="36" height="36">
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="questions.js"></script>
+  <script>
+    (function () {
+      const keys = ["A", "B"];
+      const UNIT_ORDER = [
+        "transport",
+        "communication",
+        "tourism",
+        "landforms"
+      ];
+      const unitId = new URLSearchParams(location.search).get("unit");
+      var unit = typeof UNITS !== "undefined" ? UNITS[unitId] : null;
+      const titleEl = document.getElementById("unit-title");
+      const quizEl = document.getElementById("quiz");
+
+      function setupNextNavigation() {
+        const nextNameEl = document.getElementById("js-next-navigation__name");
+        const nextLinkEl = document.getElementById("js-next-navigation__link");
+        const nextIconEl = nextLinkEl && nextLinkEl.querySelector("img");
+        if (!nextNameEl || !nextLinkEl) return;
+
+        const idx = UNIT_ORDER.indexOf(unitId);
+        var nextHref = "index.html";
+        var nextName = "単元一覧";
+
+        if (idx >= 0 && idx < UNIT_ORDER.length - 1) {
+          const nextId = UNIT_ORDER[idx + 1];
+          nextHref = "quiz.html?unit=" + nextId;
+          nextName = UNITS[nextId].title;
+        }
+
+        nextNameEl.textContent = nextName;
+        nextLinkEl.href = nextHref;
+        if (nextIconEl) nextIconEl.alt = nextName + "へ";
+      }
+
+      if (!unit) {
+        titleEl.textContent = "単元が見つかりません";
+        document.title = "単元が見つかりません";
+        document.getElementById("js-next-navigation").hidden = true;
+        return;
+      }
+
+      setupNextNavigation();
+
+      unit = shuffleChoices(unit);
+
+      titleEl.textContent = unit.title;
+      document.title = unit.title + "　|　地理総合　考査対策";
+      document.getElementById("controls").hidden = false;
+
+      const selected = unit.questions.map(function (q) {
+        return q.blanks.map(function () { return null; });
+      });
+      var revealed = false;
+
+      function shuffleChoices(src) {
+        var cloned = {
+          title: src.title,
+          questions: src.questions.map(function (q) {
+            return {
+              stem: q.stem,
+              blanks: q.blanks.map(function (b) {
+                return { choices: b.choices.slice(), correct: b.correct };
+              })
+            };
+          })
+        };
+        var blanks = [];
+        cloned.questions.forEach(function (q) {
+          q.blanks.forEach(function (b) { blanks.push(b); });
+        });
+        var sides = randomSides(blanks.length);
+        blanks.forEach(function (b, i) {
+          if (b.correct !== sides[i]) {
+            b.choices.reverse();
+            b.correct = sides[i];
+          }
+        });
+        return cloned;
+      }
+
+      function randomSides(n) {
+        var fallback = null;
+        for (var attempt = 0; attempt < 80; attempt++) {
+          var sides = [];
+          var last = null;
+          var run = 0;
+          for (var i = 0; i < n; i++) {
+            var v = (run >= 3) ? 1 - last : (Math.random() < 0.5 ? 0 : 1);
+            if (v === last) run += 1;
+            else { last = v; run = 1; }
+            sides.push(v);
+          }
+          var switches = 0;
+          for (var j = 1; j < n; j++) {
+            if (sides[j] !== sides[j - 1]) switches += 1;
+          }
+          fallback = sides;
+          if (n < 4 || switches < n - 1) return sides;
+        }
+        return fallback;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderStem(q, qi) {
+        var i = 0;
+        return escapeHtml(q.stem).replace(/〔〕/g, function () {
+          var bi = i++;
+          var blank = q.blanks[bi];
+          var pick = selected[qi][bi];
+          if (pick === null && !revealed) {
+            return '<span class="blank">〔　　〕</span>';
+          }
+          return '<span class="blank filled">〔 ' + escapeHtml(blank.choices[blank.correct]) + " 〕</span>";
+        });
+      }
+
+      function renderChoices(q, qi) {
+        return q.blanks.map(function (blank, bi) {
+          var pick = selected[qi][bi];
+          var answered = pick !== null;
+          var ok = answered && pick === blank.correct;
+          var showAnswer = answered || revealed;
+          var label = q.blanks.length > 1
+            ? '<span class="blank-label">' + (bi + 1) + "つ目</span>"
+            : "";
+          var buttons = blank.choices.map(function (choice, ci) {
+            var cls = "choice";
+            if (showAnswer) {
+              if (ci === blank.correct) cls += " correct";
+              else if (ci === pick) cls += " incorrect";
+              else cls += " idle";
+            }
+            return (
+              '<button type="button" class="' + cls + '"' +
+              ' data-q="' + qi + '" data-b="' + bi + '" data-c="' + ci + '"' +
+              (showAnswer ? " disabled" : "") +
+              '><span class="key">' + keys[ci] + "</span> " + escapeHtml(choice) + "</button>"
+            );
+          }).join("");
+          var feedback = "";
+          if (answered) {
+            feedback = ok
+              ? '<p class="feedback ok">○正解</p>'
+              : '<p class="feedback ng">×不正解</p>';
+          }
+          return '<div class="blank-block">' + label + '<div class="choices" role="group">' + buttons + "</div>" + feedback + "</div>";
+        }).join("");
+      }
+
+      function render() {
+        quizEl.innerHTML = unit.questions.map(function (q, qi) {
+          var n = String(qi + 1).padStart(2, "0");
+          return (
+            '<article class="question">' +
+              '<div class="inner question-inner">' +
+                '<p class="q-num">' + n + "</p>" +
+                '<p class="stem">' + renderStem(q, qi) + "</p>" +
+                renderChoices(q, qi) +
+              "</div>" +
+            "</article>"
+          );
+        }).join("");
+      }
+
+      quizEl.addEventListener("click", function (event) {
+        var btn = event.target.closest(".choice");
+        if (!btn || btn.disabled) return;
+        var qi = Number(btn.getAttribute("data-q"));
+        var bi = Number(btn.getAttribute("data-b"));
+        var ci = Number(btn.getAttribute("data-c"));
+        if (selected[qi][bi] !== null || revealed) return;
+        selected[qi][bi] = ci;
+        render();
+      });
+
+      document.getElementById("show-all").addEventListener("click", function () {
+        revealed = true;
+        render();
+      });
+
+      document.getElementById("hide-all").addEventListener("click", function () {
+        revealed = false;
+        selected.forEach(function (row) {
+          for (var i = 0; i < row.length; i++) row[i] = null;
+        });
+        render();
+      });
+
+      render();
+    })();
+  </script>
+  <script src="../../js/page-transition.js"></script>
+  <script src="../../js/typing-trigger.js"></script>
+</body>
+</html>
