@@ -16,15 +16,15 @@ const UNITS = {
       },
       {
         stem: "航空交通は、〔〕が重視される食料品や花卉などの輸送に適している。",
-        blanks: [{ choices: ["鮮度", "速度"], correct: 0 }]
+        blanks: [{ choices: ["鮮度", "費用"], correct: 0 }]
       },
       {
         stem: "海上交通の長所は、安く〔〕に運ぶことができることである。",
         blanks: [{ choices: ["大量", "短時間"], correct: 0 }]
       },
       {
-        stem: "海上交通の短所は、〔〕が遅いことである。",
-        blanks: [{ choices: ["速度", "輸送"], correct: 0 }]
+        stem: "船舶は、〔〕の面ではほかの交通機関に劣るものの、安く大量に運ぶことに適している。",
+        blanks: [{ choices: ["速度", "費用"], correct: 0 }]
       },
       {
         stem: "海上交通は、一般的な商品のほか、〔〕などの液体の輸送に適している。",
@@ -32,11 +32,11 @@ const UNITS = {
       },
       {
         stem: "海上交通は、〔〕や穀物などの輸送に適している。",
-        blanks: [{ choices: ["鉱産資源", "石油"], correct: 0 }]
+        blanks: [{ choices: ["鉱産資源", "花卉"], correct: 0 }]
       },
       {
         stem: "海上交通は、鉱産資源や〔〕などの輸送に適している。",
-        blanks: [{ choices: ["穀物", "石油"], correct: 0 }]
+        blanks: [{ choices: ["穀物", "電子部品"], correct: 0 }]
       },
       {
         stem: "地球上の各地を最短距離で結ぶことができる〔〕の発達は、時間距離を急速に縮小させた。",
